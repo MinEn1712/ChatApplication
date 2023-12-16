@@ -6,46 +6,22 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-//class Message{
-//    String messageSender;
-//    String messageReceiver;
-//    String messageContent;
-//
-//    public Message(){
-//
-//    }
-//    public String getMessageSender() {
-//        return messageSender;
-//    }
-//    public String getMessageReceiver() {
-//        return messageReceiver;
-//    }
-//    public String getMessageContent() {
-//        return messageContent;
-//    }
-//}
-//
-//class Group{
-//    int groupID;
-//    String groupName;
-//    List<String> groupMembers = new ArrayList<>();
-//    List<Message> groupMessages = new ArrayList<>();
-//
-//}
 public class ChatClient{
-    private Socket socket;
-    private BufferedReader receiver;
-    private BufferedWriter writer;
-    private String userName;
+    public Socket socket;
+    public BufferedReader receiver;
+    public BufferedWriter writer;
+    public String userName;
+    public String password;
+    public ChatClient(){
 
-    public ChatClient(Socket socket, String name){
+    }
+    public ChatClient(Socket socket, String userName, String password){
         try{
             this.socket = socket;
             this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.userName = name;
-
+            this.userName = userName;
+            this.password = password;
         }
         catch (IOException e){
             closeAll(socket, receiver, writer);
@@ -64,11 +40,9 @@ public class ChatClient{
                 writer.write(userName + ": " + messageToSend);
                 writer.newLine();
                 writer.flush();
-
             }
         } catch(IOException e){
             closeAll(socket, receiver, writer);
-
         }
     }
     public void readMessage(){
@@ -109,11 +83,12 @@ public class ChatClient{
     }
 
     public static void main(String[] args) throws UnknownHostException, IOException{
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter your name");
-        String name = sc.nextLine();
+        ChatGUIManager guiManager = new ChatGUIManager();
+        String userName = guiManager.getUserName();
+        String password = guiManager.getPassword();
+
         Socket socket = new Socket("localhost", 1234);
-        ChatClient client = new ChatClient(socket, name);
+        ChatClient client = new ChatClient(socket, userName, password);
         client.readMessage();
         client.sendMessage();
     }
