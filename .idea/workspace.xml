@@ -5,17 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19e3ee86-792a-4806-b48d-95a5da48be9d" name="Changes" comment="Chat GUI and group chat">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/ChatData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/ChatGUIManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/ChatGroup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/ChatGroupManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/ChatMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/ClientManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatClientModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatUserInfo.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/server/ChatClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/server/ChatClientManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/server/ChatServerController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/server/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ChatClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ChatServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatAuthentication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatClientController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatGUIManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/server/ChatGroup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatGroupManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatServer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ChatServer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ClientManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ClientManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,21 +58,32 @@
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Study/Code/Java_Programming/#PROJECT 2/mysql-connector-j-8.2.0/mysql-connector-j-8.2.0.jar",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "D:/Study/Code/Java_Programming/ChatTest/src/main/java/org/example/ChatServer.java",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.org.example.ChatClient">
-    <configuration name="ChatAuthentication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.ChatAuthentication" />
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Study\Code\Java_Programming\ChatApplication\src\main\java\org\example\client" />
+      <recent name="D:\Study\Code\Java_Programming\ChatApplication\src\main\java\org\example" />
+      <recent name="D:\Study\Code\Java_Programming\ChatApplication\src\main\java\org\example\server" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.example.server" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.org.example.client.ChatClientController">
+    <configuration name="ChatClientView" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.client.ChatClientView" />
       <module name="ChatApplication" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.*" />
+          <option name="PATTERN" value="org.example.client.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -70,12 +91,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ChatData" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.ChatData" />
+    <configuration name="ChatServerController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.server.ChatServerController" />
       <module name="ChatApplication" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.*" />
+          <option name="PATTERN" value="org.example.server.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -83,12 +104,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ChatServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.ChatServer" />
+    <configuration name="Main" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.client.Main" />
       <module name="ChatApplication" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.*" />
+          <option name="PATTERN" value="org.example.client.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -96,12 +117,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.Main" />
+    <configuration name="org.example.client.ChatClientController" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.client.ChatClientController" />
       <module name="ChatApplication" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.*" />
+          <option name="PATTERN" value="org.example.client.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -109,12 +130,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="org.example.ChatClient" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.ChatClient" />
+    <configuration name="org.example.server.Main" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.server.Main" />
       <module name="ChatApplication" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.example.*" />
+          <option name="PATTERN" value="org.example.server.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -123,19 +144,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.ChatAuthentication" />
-      <item itemvalue="Application.ChatData" />
-      <item itemvalue="Application.ChatServer" />
+      <item itemvalue="Application.org.example.client.ChatClientController" />
       <item itemvalue="Application.Main" />
-      <item itemvalue="Application.org.example.ChatClient" />
+      <item itemvalue="Application.ChatClientView" />
+      <item itemvalue="Application.ChatServerController" />
+      <item itemvalue="Application.org.example.server.Main" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.org.example.ChatClient" />
-        <item itemvalue="Application.ChatServer" />
+        <item itemvalue="Application.org.example.client.ChatClientController" />
+        <item itemvalue="Application.org.example.server.Main" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="Application.ChatData" />
-        <item itemvalue="Application.ChatAuthentication" />
+        <item itemvalue="Application.ChatClientView" />
+        <item itemvalue="Application.ChatServerController" />
       </list>
     </recent_temporary>
   </component>
@@ -162,7 +183,14 @@
       <option name="project" value="LOCAL" />
       <updated>1701961580010</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Chat GUI and group chat">
+      <created>1702713089412</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1702713089412</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -182,5 +210,9 @@
     <MESSAGE value="Chat GUI prototype, basic chat authentication, client - client chat service" />
     <MESSAGE value="Chat GUI and group chat" />
     <option name="LAST_COMMIT_MESSAGE" value="Chat GUI and group chat" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

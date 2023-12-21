@@ -1,6 +1,7 @@
-package org.example;
+package org.example.server;
 
-import javax.swing.*;
+import org.example.client.ChatMessage;
+
 import java.util.ArrayList;
 import java.util.List;
 

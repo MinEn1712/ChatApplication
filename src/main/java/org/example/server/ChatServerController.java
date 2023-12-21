@@ -1,4 +1,4 @@
-package org.example;
+package org.example.server;
 
 //import com.mysql.cj.xdevapi.Client;
 
@@ -8,11 +8,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatServer {
-    private final ServerSocket serverSocket;
+public class ChatServerController {
+    ServerSocket serverSocket;
+    public List<ChatClient> chatClients;
+    public List<ChatGroup> chatGroups;
 
-    public ChatServer(ServerSocket serverSocket){
+    public ChatServerController(ServerSocket serverSocket){
         this.serverSocket = serverSocket;
+        this.chatClients = new ArrayList<>();
+        this.chatGroups = new ArrayList<>();
     }
 
     public void serverStart(){
@@ -23,7 +27,7 @@ public class ChatServer {
                 Socket socket = serverSocket.accept();
                 System.out.println("New Friend Connected");
 
-                ClientManager clientManager = new ClientManager(socket);
+                ChatClientManager clientManager = new ChatClientManager(socket);
 
                 Thread thread = new Thread(clientManager);
                 thread.start();
@@ -40,11 +44,5 @@ public class ChatServer {
         } catch(IOException e){
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        ServerSocket serverSocket = new ServerSocket(1234);
-        ChatServer server = new ChatServer(serverSocket);
-        server.serverStart();
     }
 }
