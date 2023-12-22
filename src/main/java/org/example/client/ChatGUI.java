@@ -2,6 +2,8 @@ package org.example.client;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,19 +57,26 @@ class ChatMessageGUI extends ChatGUI{
     JPanel activeUsersSection = new JPanel();
     JPanel activeUserPanel = new JPanel();
     JPanel activeUsersListPanel = new JPanel();
+    JPanel groupListPanel = new JPanel();
     JPanel chatMessageSection = new JPanel();
     JPanel chatInputPanel = new JPanel();
 
     JLabel activeUsersLabel = new JLabel("Friend List");
+    JLabel groupLabel = new JLabel("Group List");
     JLabel userLabel = new JLabel();
 
     JTextField chatInputField = new JTextField( 50);
     JTextArea chatOutputArea = new JTextArea(30, 70);
     JScrollPane scroller = new JScrollPane(chatOutputArea);
-
     JButton addFileButton = new JButton("Add File");
     JButton sendButton = new JButton("Send");
+    JButton createGroupButton = new JButton("Create group");
+
     JList<String> activeUsersList;
+    JList<String> groupLists;
+    DefaultListModel<String> activeUsers = new DefaultListModel<>();
+    DefaultListModel<String> groups = new DefaultListModel<>();
+
     //public ChatMessage chatMessage = new ChatMessage();
     public String chatContent = "";
     public ChatMessageGUI(String userName){
@@ -83,21 +92,27 @@ class ChatMessageGUI extends ChatGUI{
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        userLabel.setText("Welcome back " + userName + "!");
-        userLabel.setBorder(BorderFactory.createLineBorder(Color.black));
+        userLabel.setText("Username: " + userName);
+        userLabel.setFont(new Font("Serif", Font.BOLD, 15));
 
-        DefaultListModel<String> activeUsers = new DefaultListModel<>();
         JScrollPane sp = new JScrollPane(activeUsersList);
-        activeUsers.addElement(userName);
         activeUsersList = new JList<>(activeUsers);
-        activeUsersList.setPreferredSize(new Dimension(170, 300));
+        activeUsersList.setPreferredSize(new Dimension(150, 205));
         activeUsersListPanel.add(activeUsersList);
+
+        groupLists = new JList<>(groups);
+        groupLists.setPreferredSize(new Dimension(150, 205));
+        groupListPanel.add(groupLists);
 
         activeUserPanel.setLayout(new BoxLayout(activeUserPanel, BoxLayout.PAGE_AXIS));
         activeUserPanel.setAlignmentX(CENTER_ALIGNMENT);
         activeUserPanel.add(userLabel);
         activeUserPanel.add(activeUsersLabel);
         activeUserPanel.add(activeUsersListPanel);
+        activeUserPanel.add(groupLabel);
+        activeUserPanel.add(groupListPanel);
+        activeUserPanel.add(createGroupButton);
+
         activeUsersSection.add(activeUserPanel);
         activeUsersSection.add(Box.createRigidArea(new Dimension(50,0)));
 

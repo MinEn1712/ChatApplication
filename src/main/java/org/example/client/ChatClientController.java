@@ -4,22 +4,24 @@ import org.example.server.ChatClient;
 import org.example.server.Main;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+
 public class ChatClientController{
     public static LoginGUI loginGUI = new LoginGUI();
     public Socket socket;
     public BufferedReader receiver;
     public BufferedWriter writer;
     public String userName;
-    public List<ChatClient> onlUsers;
+    public List<String> onlUsers = new ArrayList<>();
+    public String selectedUser;
+    public List<ChatMessage> chatMessages = new ArrayList<>();
     public static HashMap<String, String> userInfo = new HashMap<>();
     public ChatClientController(){
 
@@ -30,16 +32,11 @@ public class ChatClientController{
             this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.userName = userName;
-//            this.chatClientView = chatClientView;
         }
         catch (IOException e){
             closeAll(socket, receiver, writer);
         }
     }
-//    public void messageHandler(){
-//        readMessage();
-//        sendMessage(chatClientView.message.messageContent);
-//    }
     public static boolean checkEmpty(String input){
         return !(input != null && !input.trim().isEmpty());
     }
@@ -88,19 +85,51 @@ public class ChatClientController{
             writer.write(userName);
             writer.newLine();
             writer.flush();
+
             chatMessageGUI.sendButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try{
-                        String message = chatMessageGUI.chatInputField.getText();
-                        writer.write(userName + ": " + message);
-                        writer.newLine();
-                        writer.flush();
-                        chatMessageGUI.chatInputField.setText("");
-                        chatMessageGUI.chatOutputArea.append(message + "\n");
+                        if(selectedUser == null){
+                            JOptionPane.showMessageDialog(null, "Please select a friend or a group", "Java Chat", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else{
+                            String message = chatMessageGUI.chatInputField.getText();
+                            writer.write(selectedUser + "`" + userName + ": " + message);
+                            writer.newLine();
+                            writer.flush();
+
+                            for (ChatMessage chatMessage : chatMessages){
+                                if(chatMessage.messageReceiver.equals(selectedUser)){
+                                    chatMessage.messageContent.add(message);
+                                }
+                            }
+
+                            chatMessageGUI.chatInputField.setText("");
+                            chatMessageGUI.chatOutputArea.append(message + "\n");
+                        }
 
                     } catch(IOException ioException){
                         closeAll(socket, receiver, writer);
+                    }
+                }
+            });
+
+            chatMessageGUI.activeUsersList.addListSelectionListener(new ListSelectionListener() {
+                public void valueChanged(ListSelectionEvent evt) {
+                    if (!chatMessageGUI.activeUsersList.getValueIsAdjusting()) {
+                        if(chatMessageGUI.activeUsersList.getSelectedValue() != null){
+                            selectedUser = chatMessageGUI.activeUsersList.getSelectedValue();
+                            chatMessageGUI.chatOutputArea.setText("");
+
+                            for (ChatMessage chatMessage : chatMessages){
+                                if(!chatMessage.messageContent.isEmpty() && chatMessage.messageReceiver.equals(selectedUser)){
+                                    for(String content : chatMessage.messageContent){
+                                        chatMessageGUI.chatOutputArea.append(content + "\n");
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             });
@@ -153,7 +182,48 @@ public class ChatClientController{
                     while (true) {
                         if (scanner.hasNext()) {
                             String message = scanner.nextLine();
-                            chatMessageGUI.chatOutputArea.append(message + "\n");
+                            if(message.contains("/user")){
+                                String[] onlineUser = message.split("`");
+                                onlUsers.clear();
+
+                                for(String user : onlineUser){
+                                    if(!user.equals("/user") && !user.equals(userName)){
+                                        onlUsers.add(user);
+                                    }
+                                }
+
+                                ChatMessage newUser = new ChatMessage(onlineUser[onlineUser.length - 1]);
+                                chatMessages.add(newUser);
+
+                                SwingUtilities.invokeLater(() -> {
+                                    chatMessageGUI.activeUsers.clear();
+                                    for (String onlUser  : onlUsers) {
+                                        chatMessageGUI.activeUsers.addElement(onlUser);
+                                    }
+                                });
+                            }
+                            else{
+                                String[] buffer = message.split(":");
+                                String sender = buffer[0];
+                                boolean isSenderExist = false;
+
+                                for(ChatMessage chatMessage : chatMessages){
+                                    if(chatMessage.messageReceiver.equals(sender)){
+                                        isSenderExist = true;
+                                        if(sender.equals(selectedUser)){
+                                            chatMessageGUI.chatOutputArea.append(message + "\n");
+                                        }
+                                        chatMessage.messageContent.add(message);
+                                        break;
+                                    }
+                                }
+
+                                if(!isSenderExist){
+                                    ChatMessage newSender = new ChatMessage(sender);
+                                    newSender.messageContent.add(message);
+                                    chatMessages.add(newSender);
+                                }
+                            }
                         }
                     }
                 } catch (IOException e) {
@@ -222,6 +292,13 @@ public class ChatClientController{
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "Incorrect username or password", "Login fail", JOptionPane.ERROR_MESSAGE);
+
+                    loginGUI.userName = "";
+                    loginGUI.password = "";
+                    loginGUI.actionType = "";
+
+                    loginGUI.userNameField.setText("");
+                    loginGUI.passwordField.setText("");
                 }
             }
             else if(actionType.equals("login") && !checkEmpty(userName) && !checkEmpty(userName)){
@@ -312,19 +389,4 @@ public class ChatClientController{
         client.readMessage(chatMessageGUI);
         client.sendMessage(chatMessageGUI);
     }
-
-//    public static void main(String[] args) throws UnknownHostException, IOException{
-//        ChatClientView view = new ChatClientView();
-//        ChatClientModel chatClientModel = chatClientView.getClientInput();
-//        String userName = chatClientModel.getUserName();
-//        //String userName = guiManager.getUserName();
-////        System.out.println("Enter username: ");
-////        String userName;
-////        Scanner scan = new Scanner(System.in);
-////        userName = scan.nextLine();
-//        Socket socket = new Socket("localhost", 1234);
-//        ChatClientController client = new ChatClientController(socket, userName);
-//        client.readMessage();
-//        client.sendMessage();
-//    }
 }

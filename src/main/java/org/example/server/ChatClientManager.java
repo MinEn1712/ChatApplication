@@ -24,23 +24,41 @@ public class ChatClientManager extends Thread{
     @Override
     public void run() {
         String messageFromClient;
+        String onlineUserList = "";
+        StringBuilder sb = new StringBuilder();
         Main.serverController.chatClients.add(this.chatClient);
+
+        sb.append("/user`");
+        for (ChatClient client : Main.serverController.chatClients) {
+            onlineUserList = sb.append(client.userName).append("`").toString();
+        }
+        broadCastOnlineUserList(onlineUserList);
 
         while (chatClient.socket.isConnected()) {
             try {
                 messageFromClient = chatClient.receiver.readLine();
-                broadCastMessage(messageFromClient);
+                if(messageFromClient.contains("`")){
+                    String[] buffer = messageFromClient.split("`");
+                    broadCastMessage(buffer[1], buffer[0]);
+                }
+                //broadCastMessage(messageFromClient);
             } catch (IOException e) {
                 closeAll(chatClient.socket, chatClient.receiver, chatClient.writer);
                 break;
             }
         }
+
+        Main.serverController.chatClients.add(this.chatClient);
+
+        for (ChatClient client : Main.serverController.chatClients) {
+            client.onlineUsers.add(chatClient.userName);
+        }
     }
 
-    public void broadCastMessage(String messageToSend) {
+    public void broadCastMessage(String messageToSend, String messageReceiver) {
         for (ChatClient client : Main.serverController.chatClients) {
             try {
-                if (!(client.userName.equals(this.chatClient.userName))) {
+                if (client.userName.equals(messageReceiver)) {
                     client.writer.write(messageToSend);
                     client.writer.newLine();
                     client.writer.flush();
@@ -63,6 +81,8 @@ public class ChatClientManager extends Thread{
 //            }
 //        }
     }
+
+
 
 
 //        if (chatGroups.size() != 0) {
@@ -122,7 +142,18 @@ public class ChatClientManager extends Thread{
 //        }
         //broadCastMessage("SERVER: " + userName + " has left the chat!");
 //    }
-
+public void broadCastOnlineUserList(String onlineUserList) {
+    for (ChatClient client : Main.serverController.chatClients) {
+        try {
+            client.writer.write(onlineUserList);
+            client.writer.newLine();
+            client.writer.flush();
+        } catch (IOException e) {
+            closeAll(client.socket, client.receiver, client.writer);
+            e.printStackTrace();
+        }
+    }
+}
     public void closeAll(Socket socket, BufferedReader receiver, BufferedWriter writer) {
         //removeClientHandler();
         try {

@@ -2,6 +2,7 @@ package org.example.server;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatClient {
@@ -9,6 +10,7 @@ public class ChatClient {
     public BufferedReader receiver;
     public BufferedWriter writer;
     public String userName;
+    public List<String> onlineUsers = new ArrayList<>();
     public ChatClient(){
 
     }
@@ -17,6 +19,7 @@ public class ChatClient {
         this.socket = socket;
         this.receiver = receiver;
         this.writer = writer;
+        this.onlineUsers = new ArrayList<>();
     }
 
     public static ChatClient findClient(List<ChatClient> clientList, String userName) {

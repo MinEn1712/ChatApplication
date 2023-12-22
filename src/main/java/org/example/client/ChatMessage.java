@@ -1,14 +1,15 @@
 package org.example.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChatMessage {
-    String messageSender;
-    String messageType;
-    String messageContent;
+    String messageReceiver;
+    List<String> messageContent;
 
     public ChatMessage(){}
-    public ChatMessage(String sender, String type, String content){
-        this.messageSender = sender;
-        this.messageType = type;
-        this.messageContent = content;
+    public ChatMessage(String receiver){
+        this.messageReceiver = receiver;
+        this.messageContent = new ArrayList<>();
     }
 }
