@@ -2,19 +2,24 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="ChatApplication:jar2" />
+      <artifact name="ChatServer:jar" />
     </artifacts-to-build>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="19e3ee86-792a-4806-b48d-95a5da48be9d" name="Changes" comment="chat group">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ChatApplication_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ChatApplication_jar2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" afterDir="false" />
+    <list default="true" id="19e3ee86-792a-4806-b48d-95a5da48be9d" name="Changes" comment="Complete project">
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ChatClient_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ChatServer_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/artifacts/ChatClient_jar/ChatClient.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/artifacts/ChatServer_jar/ChatServer.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatMessageGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/client/LoginGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/client/SignUpGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/client/ChatUserInfo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatUserInfo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/client/ChatGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/client/ChatGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,22 +47,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Study/Code/Java_Programming/ChatTest/src/main/java/org/example/ChatServer.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "D:/Study/Code/Java_Programming/ChatApplication/src/main/resources/ChatClient_jar",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Study\Code\Java_Programming\ChatApplication\src\main\resources" />
       <recent name="D:\Study\Code\Java_Programming\ChatApplication\src\main\java\org\example\client" />
       <recent name="D:\Study\Code\Java_Programming\ChatApplication\src\main\java\org\example" />
       <recent name="D:\Study\Code\Java_Programming\ChatApplication\src\main\java\org\example\server" />
@@ -66,7 +72,7 @@
       <recent name="org.example.server" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Application.ChatClientController">
     <configuration name="ChatClientController" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.client.ChatClientController" />
       <module name="ChatApplication" />
@@ -149,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1703314751139</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Complete project">
+      <created>1703339544412</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1703339544412</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -171,7 +184,8 @@
     <MESSAGE value="Login, sign up, chat GUI" />
     <MESSAGE value="complete 1vs1 chat with UI" />
     <MESSAGE value="chat group" />
-    <option name="LAST_COMMIT_MESSAGE" value="chat group" />
+    <MESSAGE value="Complete project" />
+    <option name="LAST_COMMIT_MESSAGE" value="Complete project" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
