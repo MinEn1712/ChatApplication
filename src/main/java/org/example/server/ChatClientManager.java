@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class ChatClientManager extends Thread{
     public ChatClient chatClient;
@@ -25,34 +24,64 @@ public class ChatClientManager extends Thread{
     public void run() {
         String messageFromClient;
         String onlineUserList = "";
-        StringBuilder sb = new StringBuilder();
+        StringBuilder getOnlineUser = new StringBuilder();
         Main.serverController.chatClients.add(this.chatClient);
 
-        sb.append("/user`");
+        getOnlineUser.append("/user`");
         for (ChatClient client : Main.serverController.chatClients) {
-            onlineUserList = sb.append(client.userName).append("`").toString();
+            onlineUserList = getOnlineUser.append(client.userName).append("`").toString();
         }
         broadCastOnlineUserList(onlineUserList);
 
         while (chatClient.socket.isConnected()) {
             try {
                 messageFromClient = chatClient.receiver.readLine();
-                if(messageFromClient.contains("`")){
+                if(messageFromClient.contains("/send")){
                     String[] buffer = messageFromClient.split("`");
-                    broadCastMessage(buffer[1], buffer[0]);
+                    broadCastMessage(buffer[2], buffer[1]);
                 }
-                //broadCastMessage(messageFromClient);
+                else if(messageFromClient.contains("/createGroup")){
+                    String[] buffer = messageFromClient.split("`");
+                    String groupName = buffer[1];
+
+                    List<String> groupMembers = new ArrayList<>();
+                    for(int i = 2; i < buffer.length; i++){
+                        groupMembers.add(buffer[i]);
+                    }
+
+                    ChatGroup chatGroup = new ChatGroup(groupName, groupMembers);
+                    broadCastGroupList(chatGroup);
+
+                    Main.serverController.chatGroups.add(chatGroup);
+                    Main.serverController.chatServerGUI.receiveMessageArea.append("Group " + groupName + " Created." + "\n");
+                }
+                if(messageFromClient.contains("/sendGroup")){
+                    String[] buffer = messageFromClient.split("`");
+                    broadCastGroupMessage(buffer[2], buffer[1]);
+                }
             } catch (IOException e) {
                 closeAll(chatClient.socket, chatClient.receiver, chatClient.writer);
                 break;
             }
         }
 
-        Main.serverController.chatClients.add(this.chatClient);
-
-        for (ChatClient client : Main.serverController.chatClients) {
-            client.onlineUsers.add(chatClient.userName);
+        Main.serverController.chatClients.remove(this.chatClient);
+        StringBuilder removeUser = new StringBuilder();
+        removeUser.append("/remove`");
+        if(Main.serverController.chatClients.size() == 1){
+            for (ChatClient client : Main.serverController.chatClients) {
+                onlineUserList = removeUser.append(client.userName).toString();
+            }
         }
+        else{
+            for (ChatClient client : Main.serverController.chatClients) {
+                onlineUserList = removeUser.append(client.userName).append("`").toString();
+            }
+        }
+        broadCastOnlineUserList(onlineUserList);
+        Main.serverController.onlineUsers--;
+        Main.serverController.chatServerGUI.onlineUsersField.setText(Integer.toString(Main.serverController.onlineUsers));
+        Main.serverController.chatServerGUI.receiveMessageArea.append("User " + this.chatClient.userName + " Disconnected" + "\n");
     }
 
     public void broadCastMessage(String messageToSend, String messageReceiver) {
@@ -68,80 +97,28 @@ public class ChatClientManager extends Thread{
                 e.printStackTrace();
             }
         }
-//        for (ChatClient client : Main.serverController.chatClients) {
-//            try {
-//                if (!(client.userName.equals(this.chatClient.userName))) {
-//                    client.writer.write(messageToSend);
-//                    client.writer.newLine();
-//                    client.writer.flush();
-//                }
-//            } catch (IOException e) {
-//                //closeAll(socket, receiver, writer);
-//                e.printStackTrace();
-//            }
-//        }
+    }
+    public void broadCastGroupMessage(String messageToSend, String groupName) {
+        for (ChatGroup group : Main.serverController.chatGroups) {
+            if(group.groupName.equals(groupName)) {
+                for (ChatClient client : Main.serverController.chatClients) {
+                    for(String member : group.groupMembers){
+                        if(client.userName.equals(member)){
+                            try {
+                                client.writer.write("/receiveGroup`" + group.groupName + "`" + messageToSend);
+                                client.writer.newLine();
+                                client.writer.flush();
+                            } catch (IOException e) {
+                                closeAll(client.socket, client.receiver, client.writer);
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-
-
-
-//        if (chatGroups.size() != 0) {
-//            ChatGroup group = chatGroups.get(0);
-//            if (!(group.groupName.equals(this.userName))) {
-//                for (ChatClientManager clientManager : clientManagers) {
-//                    try {
-//                        if (!(clientManager.userName.equals(group.groupName))) {
-//                            clientManager.writer.write(messageToSend);
-//                            clientManager.writer.newLine();
-//                            clientManager.writer.flush();
-//                        }
-//                    } catch (IOException e) {
-//                        //closeAll(socket, receiver, writer);
-//                    }
-//                }
-//            }
-
-
-
-//        for (ClientManager clientHandler : clientManagers) {
-//            try {
-//                //if (!(clientHandler.userName.equals(this.userName)) && clientHandler.userName.equals(userName)) {
-//                if (!(clientHandler.userName.equals(this.userName))) {
-//                    clientHandler.writer.write(messageToSend);
-//                    clientHandler.writer.newLine();
-//                    clientHandler.writer.flush();
-//                }
-//            } catch (IOException e) {
-//                closeAll(socket, receiver, writer);
-//            }
-//        }
-//        }
-//    }
-
-//    public void createPrivateGroup() {
-//        for (ChatClientManager clientManager : clientManagers) {
-//            if (!(clientManager.userName.equals(this.userName))) {
-//                List<String> members = new ArrayList<>();
-//                members.add(this.userName);
-//                members.add(clientManager.userName);
-//
-//                ChatGroup group = new ChatGroup(1, 1, this.userName, members);
-//                chatGroups.add(group);
-//            }
-//        }
-//    }
-
-//    public void removeClientHandler() {
-//        clientManagers.remove(this);
-//        for (ChatGroup chatGroup : chatGroups){
-//            for(String member : chatGroup.groupMembers){
-//                if(member == this.userName){
-//                    chatGroups.remove(chatGroup);
-//                }
-//            }
-//        }
-        //broadCastMessage("SERVER: " + userName + " has left the chat!");
-//    }
 public void broadCastOnlineUserList(String onlineUserList) {
     for (ChatClient client : Main.serverController.chatClients) {
         try {
@@ -154,8 +131,23 @@ public void broadCastOnlineUserList(String onlineUserList) {
         }
     }
 }
+public void broadCastGroupList(ChatGroup group) {
+    for (ChatClient client : Main.serverController.chatClients) {
+        for(String member : group.groupMembers){
+            if(client.userName.equals(member)){
+                try {
+                    client.writer.write("/group`" + group.groupName);
+                    client.writer.newLine();
+                    client.writer.flush();
+                } catch (IOException e) {
+                    closeAll(client.socket, client.receiver, client.writer);
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
     public void closeAll(Socket socket, BufferedReader receiver, BufferedWriter writer) {
-        //removeClientHandler();
         try {
             if (receiver != null) {
                 receiver.close();

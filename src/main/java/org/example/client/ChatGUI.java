@@ -1,19 +1,9 @@
 package org.example.client;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Vector;
 
 public class ChatGUI extends JPanel implements ActionListener{
     public String userName;
@@ -41,7 +31,7 @@ public class ChatGUI extends JPanel implements ActionListener{
     public void createFrame(){
         frame.setTitle("Java Chat");
         frame.setSize(1000, 600);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         createPanel();
 
@@ -65,7 +55,7 @@ class ChatMessageGUI extends ChatGUI{
     JLabel groupLabel = new JLabel("Group List");
     JLabel userLabel = new JLabel();
 
-    JTextField chatInputField = new JTextField( 50);
+    JTextField chatInputField = new JTextField( 52);
     JTextArea chatOutputArea = new JTextArea(30, 70);
     JScrollPane scroller = new JScrollPane(chatOutputArea);
     JButton addFileButton = new JButton("Add File");
@@ -76,16 +66,12 @@ class ChatMessageGUI extends ChatGUI{
     JList<String> groupLists;
     DefaultListModel<String> activeUsers = new DefaultListModel<>();
     DefaultListModel<String> groups = new DefaultListModel<>();
-
-    //public ChatMessage chatMessage = new ChatMessage();
-    public String chatContent = "";
     public ChatMessageGUI(String userName){
         this.userName = userName;
     }
     @Override public void createPanel(){
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-        //sendButton.addActionListener(this);
         sendButton.setActionCommand("send");
 
         chatOutputArea.setEditable(false);
@@ -98,14 +84,21 @@ class ChatMessageGUI extends ChatGUI{
         JScrollPane sp = new JScrollPane(activeUsersList);
         activeUsersList = new JList<>(activeUsers);
         activeUsersList.setPreferredSize(new Dimension(150, 205));
+        activeUsersList.setBorder(BorderFactory.createLineBorder(Color.black));
         activeUsersListPanel.add(activeUsersList);
 
         groupLists = new JList<>(groups);
         groupLists.setPreferredSize(new Dimension(150, 205));
+        groupLists.setBorder(BorderFactory.createLineBorder(Color.black));
         groupListPanel.add(groupLists);
 
         activeUserPanel.setLayout(new BoxLayout(activeUserPanel, BoxLayout.PAGE_AXIS));
         activeUserPanel.setAlignmentX(CENTER_ALIGNMENT);
+        userLabel.setAlignmentX(CENTER_ALIGNMENT);
+        activeUsersLabel.setAlignmentX(CENTER_ALIGNMENT);
+        groupLabel.setAlignmentX(CENTER_ALIGNMENT);
+        createGroupButton.setAlignmentX(CENTER_ALIGNMENT);
+
         activeUserPanel.add(userLabel);
         activeUserPanel.add(activeUsersLabel);
         activeUserPanel.add(activeUsersListPanel);
@@ -117,7 +110,7 @@ class ChatMessageGUI extends ChatGUI{
         activeUsersSection.add(Box.createRigidArea(new Dimension(50,0)));
 
         chatInputPanel.add(addFileButton);
-        chatInputPanel.add(Box.createRigidArea(new Dimension(45,0)));
+        chatInputPanel.add(Box.createRigidArea(new Dimension(10,0)));
         chatInputPanel.add(chatInputField);
         chatInputPanel.add(Box.createRigidArea(new Dimension(5,0)));
         chatInputPanel.add(sendButton);
@@ -180,13 +173,6 @@ class SignUpGUI extends ChatGUI{
                 actionType = e.getActionCommand();
             }
         } );
-//        loginButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                frame.dispose();
-//                LoginGUI loginGUI = new LoginGUI();
-//                loginGUI.createFrame(false);
-//            }
-//        } );
 
         userNamePanel.add(userNameLabel);
         userNamePanel.add(Box.createRigidArea(new Dimension(54,0)));
@@ -258,13 +244,6 @@ class LoginGUI extends ChatGUI{
                 actionType = e.getActionCommand();
             }
         } );
-//        signUpButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                frame.dispose();
-//                SignUpGUI signUpGUI = new SignUpGUI();
-//                signUpGUI.createFrame(false);
-//            }
-//        } );
 
         userNamePanel.add(userNameLabel);
         userNamePanel.add(userNameField);
@@ -284,45 +263,3 @@ class LoginGUI extends ChatGUI{
         frame.dispose();
     }
 }
-
-//public class ChatClientView {
-//    public LoginGUI loginGUI = new LoginGUI();
-//    public ChatClientModel model = new ChatClientModel();
-//    public ChatMessage message;
-//    public ChatClientView(){
-//        loginGUI.createFrame(false);
-//
-//        getUserInfo();
-//
-//        while(model.getActionType() == null){
-//            model.setUserName(loginGUI.getUserName());
-//            model.setPassword(loginGUI.getPassword());
-//            if(checkEmpty(model.getUserName(), model.getPassword())) continue;
-//            model.setActionType(loginGUI.getActionType());
-//        }
-//    }
-//    public boolean checkEmpty(String userName, String password){
-//        return !(userName != null && !userName.trim().isEmpty()) || !(password != null && !password.trim().isEmpty());
-//    }
-//    public void getUserInfo(){
-//        model.setActionType(loginGUI.getActionType());
-//        model.setUserName(loginGUI.getUserName());
-//        model.setPassword(loginGUI.getPassword());
-//    }
-//    public void getMessageGUI(){
-//        loginGUI.closeFrame();
-//        ChatMessageGUI chatMessageGUI = new ChatMessageGUI(model.getUserName(), model.getPassword(), model.getActionType());
-//        chatMessageGUI.createFrame(true);
-//        System.out.println(chatMessageGUI.chatMessage.messageContent);
-//
-////        while(true){
-////            if(chatMessageGUI.getActionType().equals("Send")){
-////                if(chatMessageGUI.chatMessage.messageContent.equals("quit")) break;
-////                message = new ChatMessage(chatMessageGUI.chatMessage.messageSender, chatMessageGUI.chatMessage.messageType, chatMessageGUI.chatMessage.messageContent);
-////                //System.out.println(chatMessageGUI.chatMessage.messageContent);
-////                //model.addMessage(chatMessageGUI.chatMessage);
-////                chatMessageGUI.actionType = "";
-////            }
-////        }
-//    }
-//}

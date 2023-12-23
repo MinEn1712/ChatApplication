@@ -1,8 +1,5 @@
 package org.example.client;
 
-import org.example.server.ChatClient;
-import org.example.server.Main;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -10,8 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.*;
+import java.util.List;
 
 public class ChatClientController{
     public static LoginGUI loginGUI = new LoginGUI();
@@ -20,12 +17,12 @@ public class ChatClientController{
     public BufferedWriter writer;
     public String userName;
     public List<String> onlUsers = new ArrayList<>();
+    public List<String> chatGroups = new ArrayList<>();
     public String selectedUser;
+    public String selectedGroup;
     public List<ChatMessage> chatMessages = new ArrayList<>();
+    public List<ChatMessage> groupChatMessages = new ArrayList<>();
     public static HashMap<String, String> userInfo = new HashMap<>();
-    public ChatClientController(){
-
-    }
     public ChatClientController(Socket socket, String userName){
         try{
             this.socket = socket;
@@ -90,23 +87,33 @@ public class ChatClientController{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try{
-                        if(selectedUser == null){
+                        if(selectedUser == null || selectedGroup == null){
                             JOptionPane.showMessageDialog(null, "Please select a friend or a group", "Java Chat", JOptionPane.ERROR_MESSAGE);
                         }
-                        else{
-                            String message = chatMessageGUI.chatInputField.getText();
-                            writer.write(selectedUser + "`" + userName + ": " + message);
-                            writer.newLine();
-                            writer.flush();
+                        else {
+                            if(!selectedUser.isBlank()){
+                                String message = chatMessageGUI.chatInputField.getText();
+                                writer.write("/send`" + selectedUser + "`" + userName + ": " + message);
+                                writer.newLine();
+                                writer.flush();
 
-                            for (ChatMessage chatMessage : chatMessages){
-                                if(chatMessage.messageReceiver.equals(selectedUser)){
-                                    chatMessage.messageContent.add(message);
+                                for (ChatMessage chatMessage : chatMessages){
+                                    if(chatMessage.messageReceiver.equals(selectedUser)){
+                                        chatMessage.messageContent.add(message);
+                                    }
                                 }
-                            }
 
-                            chatMessageGUI.chatInputField.setText("");
-                            chatMessageGUI.chatOutputArea.append(message + "\n");
+                                chatMessageGUI.chatInputField.setText("");
+                                chatMessageGUI.chatOutputArea.append(message + "\n");
+                            }
+                            else{
+                                String message = chatMessageGUI.chatInputField.getText();
+                                writer.write("/sendGroup`" + selectedGroup + "`" + userName + ": " + message);
+                                writer.newLine();
+                                writer.flush();
+
+                                chatMessageGUI.chatInputField.setText("");
+                            }
                         }
 
                     } catch(IOException ioException){
@@ -119,6 +126,9 @@ public class ChatClientController{
                 public void valueChanged(ListSelectionEvent evt) {
                     if (!chatMessageGUI.activeUsersList.getValueIsAdjusting()) {
                         if(chatMessageGUI.activeUsersList.getSelectedValue() != null){
+                            chatMessageGUI.groupLists.clearSelection();
+                            selectedGroup = "";
+
                             selectedUser = chatMessageGUI.activeUsersList.getSelectedValue();
                             chatMessageGUI.chatOutputArea.setText("");
 
@@ -134,41 +144,66 @@ public class ChatClientController{
                 }
             });
 
-////            Scanner sc = new Scanner(System.in);
-//            //String actionType;
-//            String messageToSend;
-//
-//            while(socket.isConnected()){
-////                String messageToSend = sc.nextLine();
-////                writer.write(userName + ": " + messageToSend);
-////                writer.newLine();
-////                writer.flush();
-//
-//                //actionType = chatMessageGUI.actionType;
-//                if(!chatMessageGUI.chatContent.equals("")){
-//                    System.out.println(userName + ": " + chatMessageGUI.chatContent);
-//                    writer.write(userName + ": " + chatMessageGUI.chatContent);
-//                    writer.newLine();
-//                    writer.flush();
-//
-//                    chatMessageGUI.chatContent = "";
-//                }
+            chatMessageGUI.createGroupButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String groupName = JOptionPane.showInputDialog(null, "Enter group name", "Java Chat", JOptionPane.INFORMATION_MESSAGE);
+                    if(groupName != null){
+                        if(groupName.isBlank()){
+                            JOptionPane.showMessageDialog(null, "Please enter group name!", "Java Chat", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else{
+                            try{
+                                DefaultListModel<String> onlineUsersListModel = new DefaultListModel<>();
+                                for(String onlUser : onlUsers){
+                                    onlineUsersListModel.addElement(onlUser);
+                                }
 
+                                JList<String> onlineUsers = new JList<>(onlineUsersListModel);
+                                onlineUsers.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+                                JOptionPane.showMessageDialog(null, new JScrollPane(onlineUsers));
 
+                                List<String> selectedUsers = onlineUsers.getSelectedValuesList();
+                                String selectedUserList = "";
+                                StringBuilder getSelectedUsers = new StringBuilder();
+                                getSelectedUsers.append("/createGroup`").append(groupName).append("`").append(userName).append("`");
+                                for(String selectedUser : selectedUsers){
+                                    selectedUserList = getSelectedUsers.append(selectedUser).append("`").toString();
+                                }
 
+                                writer.write(selectedUserList);
+                                writer.newLine();
+                                writer.flush();
 
+                            } catch(IOException ioException){
+                                closeAll(socket, receiver, writer);
+                            }
+                        }
+                    }
+                }
+            } );
 
-//                if(actionType.equals("send")){
-//                    System.out.println(userName + ": " + messageToSend);
-//                    writer.write(userName + ": " + messageToSend);
-//                    writer.newLine();
-//                    writer.flush();
-//
-//                    chatMessageGUI.actionType = "";
-//                    chatMessageGUI.chatContent = "";
-//                }
+            chatMessageGUI.groupLists.addListSelectionListener(new ListSelectionListener() {
+                public void valueChanged(ListSelectionEvent evt) {
+                    if (!chatMessageGUI.groupLists.getValueIsAdjusting()) {
+                        if(chatMessageGUI.groupLists.getSelectedValue() != null){
+                            chatMessageGUI.activeUsersList.clearSelection();
+                            selectedUser = "";
 
-//            }
+                            selectedGroup = chatMessageGUI.groupLists.getSelectedValue();
+                            chatMessageGUI.chatOutputArea.setText("");
+
+                            for (ChatMessage groupChatMessage : groupChatMessages){
+                                if(!groupChatMessage.messageContent.isEmpty() && groupChatMessage.messageReceiver.equals(selectedGroup)){
+                                    for(String content : groupChatMessage.messageContent){
+                                        chatMessageGUI.chatOutputArea.append(content + "\n");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
         } catch(IOException e){
             closeAll(socket, receiver, writer);
         }
@@ -184,11 +219,12 @@ public class ChatClientController{
                             String message = scanner.nextLine();
                             if(message.contains("/user")){
                                 String[] onlineUser = message.split("`");
-                                onlUsers.clear();
 
                                 for(String user : onlineUser){
                                     if(!user.equals("/user") && !user.equals(userName)){
-                                        onlUsers.add(user);
+                                        if(!onlUsers.contains(user)){
+                                            onlUsers.add(user);
+                                        }
                                     }
                                 }
 
@@ -196,11 +232,66 @@ public class ChatClientController{
                                 chatMessages.add(newUser);
 
                                 SwingUtilities.invokeLater(() -> {
-                                    chatMessageGUI.activeUsers.clear();
                                     for (String onlUser  : onlUsers) {
+                                        if(!chatMessageGUI.activeUsers.contains(onlUser)){
+                                            chatMessageGUI.activeUsers.addElement(onlUser);
+                                        }
+                                    }
+                                });
+                            }
+                            else if(message.contains("/remove")){
+                                String[] onlineUser = message.split("`");
+                                String removeUser = "";
+
+                                for(String user : onlUsers){
+                                    if(!user.equals("/remove") && !user.equals(userName)){
+                                        if(!Arrays.asList(onlineUser).contains(user)){
+                                            removeUser = user;
+                                        }
+                                    }
+                                }
+
+                                if(!removeUser.isBlank()){
+                                    onlUsers.remove(removeUser);
+                                }
+
+                                SwingUtilities.invokeLater(() -> {
+                                    chatMessageGUI.activeUsers.clear();
+                                    for (String onlUser : onlUsers) {
                                         chatMessageGUI.activeUsers.addElement(onlUser);
                                     }
                                 });
+
+                            }
+                            else if(message.contains("/group")){
+                                String[] group = message.split("`");
+                                String groupName = group[1];
+                                chatGroups.add(groupName);
+
+                                ChatMessage newGroup = new ChatMessage(groupName);
+                                groupChatMessages.add(newGroup);
+
+                                SwingUtilities.invokeLater(() -> {
+                                    chatMessageGUI.groups.clear();
+                                    for (String chatGroup  : chatGroups) {
+                                        chatMessageGUI.groups.addElement(chatGroup);
+                                    }
+                                });
+                            }
+                            else if(message.contains("/receiveGroup")){
+                                String[] buffer = message.split("`");
+                                String group = buffer[1];
+                                String sentMessage = buffer[2];
+
+                                for(ChatMessage groupChatMessage : groupChatMessages){
+                                    if(groupChatMessage.messageReceiver.equals(group)){
+                                        if(group.equals(selectedGroup)){
+                                            chatMessageGUI.chatOutputArea.append(sentMessage + "\n");
+                                        }
+                                        groupChatMessage.messageContent.add(sentMessage);
+                                        break;
+                                    }
+                                }
                             }
                             else{
                                 String[] buffer = message.split(":");
@@ -231,24 +322,6 @@ public class ChatClientController{
                 }
             }
         }).start();
-//            @Override
-//            public void run() {
-//                String msfFromGroupChat;
-//
-//                while(socket.isConnected()){
-//                    try{
-//                        msfFromGroupChat = receiver.readLine();
-//                        System.out.println(msfFromGroupChat);
-////                        chatMessageGUI.chatOutputArea.append(msfFromGroupChat);
-////                        chatMessageGUI.chatOutputArea.append("\n");
-//                    } catch (IOException e){
-//                        closeAll(socket, receiver, writer);
-//                    }
-//
-//                }
-//
-//            }
-//        }).start();
     }
     public void closeAll(Socket socket, BufferedReader buffReader, BufferedWriter buffWriter){
         try{
@@ -265,16 +338,10 @@ public class ChatClientController{
             e.getStackTrace();
         }
     }
-    public static void main(String[] args) throws UnknownHostException, IOException {
-        //ChatClientView view = new ChatClientView();
-        //String userName = guiManager.getUserName();
-//        System.out.println("Enter username: ");
-//        String userName;
-//        Scanner scan = new Scanner(System.in);
-//        userName = scan.nextLine();
+    public static void main(String[] args) throws IOException {
         String userName = "";
         String password = "";
-        String actionType = "";
+        String actionType;
 
         getUserInfo();
         loginGUI.createFrame();
@@ -291,7 +358,7 @@ public class ChatClientController{
                     break;
                 }
                 else{
-                    JOptionPane.showMessageDialog(null, "Incorrect username or password", "Login fail", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Incorrect username or password", "Java Chat", JOptionPane.ERROR_MESSAGE);
 
                     loginGUI.userName = "";
                     loginGUI.password = "";
@@ -302,7 +369,7 @@ public class ChatClientController{
                 }
             }
             else if(actionType.equals("login") && !checkEmpty(userName) && !checkEmpty(userName)){
-                JOptionPane.showMessageDialog(null, "Incorrect username or password", "Login fail", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Incorrect username or password", "Java Chat", JOptionPane.ERROR_MESSAGE);
 
                 loginGUI.userName = "";
                 loginGUI.password = "";
@@ -334,7 +401,7 @@ public class ChatClientController{
                             signUpGUI.passwordField.setText("");
                             signUpGUI.confirmPasswordField.setText("");
 
-                            JOptionPane.showMessageDialog(null, "Username has already been used", "Sign up", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Username has already been used", "Java Chat", JOptionPane.INFORMATION_MESSAGE);
                         }
                         else if(signupConfirmPassword.equals(signupPassword) && !checkEmpty(signupUsername) && !checkEmpty(signupPassword) && !checkEmpty(signupConfirmPassword)){
                             signUpGUI.actionType = "";
@@ -344,7 +411,7 @@ public class ChatClientController{
                             signUpGUI.passwordField.setText("");
                             signUpGUI.confirmPasswordField.setText("");
 
-                            JOptionPane.showMessageDialog(null, "Create account successfully", "Sign up", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Create account successfully", "Java Chat", JOptionPane.INFORMATION_MESSAGE);
 
                             userInfo.put(signupUsername, signupPassword);
                             saveUserInfo();
@@ -353,7 +420,7 @@ public class ChatClientController{
                             break;
                         }
                         else{
-                            JOptionPane.showMessageDialog(null, "Confirm password is incorrect", "Sign up", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Confirm password is incorrect", "Java Chat", JOptionPane.ERROR_MESSAGE);
 
                             signUpGUI.userName = "";
                             signUpGUI.password = "";
@@ -380,7 +447,6 @@ public class ChatClientController{
                 }
             }
         }
-
 
         Socket socket = new Socket("localhost", 1234);
         ChatClientController client = new ChatClientController(socket, userName);

@@ -21,12 +21,4 @@ public class ChatClient {
         this.writer = writer;
         this.onlineUsers = new ArrayList<>();
     }
-
-    public static ChatClient findClient(List<ChatClient> clientList, String userName) {
-        for (ChatClient client : clientList) {
-            if (client.userName.equals(userName))
-                return client;
-        }
-        return null;
-    }
 }
